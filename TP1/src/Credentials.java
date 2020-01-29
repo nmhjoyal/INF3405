@@ -17,7 +17,7 @@ public class Credentials {
     public boolean isValidCredentials() throws Exception {
 		boolean usernameExists = false;
 
-		FileReader reader = new FileReader("users.json");
+		FileReader reader = new FileReader("./users.json");
 		JSONParser jsonParser = new JSONParser();
 		JSONObject object = (JSONObject) jsonParser.parse(reader);
 		
@@ -30,11 +30,10 @@ public class Credentials {
 			
 			if (this.username.contentEquals(usernameFound)) {
 				if (this.password.contentEquals(passwordFound)) {
-					System.out.println("Connexion réussie.");
+					reader.close();
 					return true;
 				}
-				System.out.println("Mot de passe incorrecte. Veuillez réessayer.");
-				usernameExists = true;
+				reader.close();
 				return false;
 			}
 		}
@@ -63,7 +62,7 @@ public class Credentials {
     }
     
     private void addUserToDatabase(JSONObject object) throws IOException{
-    	FileWriter writer = new FileWriter("users.json");
+    	FileWriter writer = new FileWriter("./users.json");
 		writer.write(object.toJSONString());
 		writer.flush();
 		writer.close();

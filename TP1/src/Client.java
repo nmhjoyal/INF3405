@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -12,18 +13,39 @@ public class Client {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println("bitch");		
-		System.out.println("Rentrez l'adresse IP du serveur, puis son port, ensuite votre nom d'utilisateur et votre mot de passe: ");
+		System.out.println("Rentrez l'adresse IP du serveur, puis son port.");
 		
 		Interface in = new Interface();
-		String ipAddress = in.getIPAddress();
-		int port = in.getPort();
-		socket = new Socket(ipAddress, port);
-		Credentials credentials = in.login();
+		while (true) {
+			try {
+				String ipAddress = in.getIPAddress();
+				int port = in.getPort();
+				socket = new Socket(ipAddress, port);
+				break;
+			} catch (IOException e) {
+				System.out.println("Adresse IP ou port invalide. Veuillez réessayer.");
+				continue;
+			}
+		}
 		
-		DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-		output.writeUTF(credentials.username);
-		output.writeUTF(credentials.password);
-
+		try {
+			Credentials credentials = in.login();
+			DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+			output.writeUTF(credentials.username);
+			output.writeUTF(credentials.password);
+			DataInputStream input = new DataInputStream(socket.getInputStream());
+			if (input.readBoolean()) {
+				//Do stuff
+				System.out.println("Connexion réussie.");
+				while (true) {
+					output.writeUTF(in.readFilename());
+				}
+			} else {
+				System.out.println("Erreur dans la saisie du mot de passe");
+			}
+		} catch (IOException e) {
+			System.out.println("Error handling client");
+		}
 		socket.close();
 	}
 }

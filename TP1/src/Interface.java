@@ -77,6 +77,11 @@ public class Interface {
 		return new Credentials(username, new String(password));
 	}
 	
+	public String readFilename() {
+		System.out.println("Entrer le nom du fichier à transformer, ou entrer 0 pour déconnecter.");
+		return inputScanner.nextLine();
+	}
+	
 	public void close() {
 		inputScanner.close();
 	}
