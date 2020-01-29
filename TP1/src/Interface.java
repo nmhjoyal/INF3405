@@ -61,16 +61,16 @@ public class Interface {
 	}
 	
 	public Credentials login() {
-		Console console = null;
 		String username = "";
-		char[] password = null;
+		String password = "";
 		try {
-			console = System.console();
-			console.flush();
-			if (console != null) {
-				username = console.readLine("Nom d'utilisateur : ");
-	        	password = console.readPassword("Mot de passe : ");
-	        }
+			System.out.println("Nom d'utilisateur : ");
+			inputScanner.next();
+			username = inputScanner.nextLine();
+			System.out.println("vous avez rentrez : " + username);
+			System.out.println("Mot de passe : ");
+			password = inputScanner.nextLine();  
+			System.out.println("vous avez rentrez : " + password);
 	    } catch(Exception ex) {
 	    	ex.printStackTrace();      
 	    }
