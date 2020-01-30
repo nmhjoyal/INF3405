@@ -37,8 +37,10 @@ public class Client {
 			if (input.readBoolean()) {
 				//Do stuff
 				System.out.println("Connexion réussie.");
-				while (true) {
-					output.writeUTF(in.readFilename());
+				String response = "";
+				while (!response.equals("0")) {
+					response = in.readFilename();					
+					output.writeUTF(response);
 				}
 			} else {
 				System.out.println("Erreur dans la saisie du mot de passe");
