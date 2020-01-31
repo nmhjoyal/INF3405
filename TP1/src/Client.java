@@ -39,11 +39,14 @@ public class Client {
 			output.writeUTF(credentials.password);
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 			if (input.readBoolean()) {
-				System.out.println(Result.CONNECTION_SUCCESSFUL);
 				
 				// Envoyer l'image au serveur
-				while (true) {
-					output.writeUTF(in.readFilename());
+
+				System.out.println(Result.CONNECTION_SUCCESSFUL);
+				String response = "";
+				while (!response.equals("0")) {
+					response = in.readFilename();					
+					output.writeUTF(response);
 				}
 			} else {
 				System.out.println(ErrorHandling.ERROR_PASSWORD);
