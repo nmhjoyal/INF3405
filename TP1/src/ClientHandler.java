@@ -1,4 +1,5 @@
 import java.awt.image.BufferedImage;
+import resources.strings.*;
 import java.io.Console;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,19 +18,22 @@ public class ClientHandler extends Thread {
 	
 	public ClientHandler(Socket socket) {
 		this.socket = socket;
-		System.out.println("New connection at " + socket);
+		System.out.println(Result.NEW_CONNECTION + socket);
 	}
 	
 	public void run() {
 		try {
+			// Créer les tunnels de communication avec le client
 			DataOutputStream output = new DataOutputStream(socket.getOutputStream());
 			DataInputStream input = new DataInputStream(socket.getInputStream());
+			
+			// Envoyer données utilisateur pour validation du serveur
 			String username = input.readUTF();
 			String password = input.readUTF();
 			if (new Credentials(username, password).isValidCredentials()) {
-				//Do stuff
 				output.writeBoolean(true);
 				while (true) {
+					// Lire l'image du client et la traiter
 					String nomFichier = input.readUTF();
 					System.out.println(nomFichier);
 					if (nomFichier != "0") {
@@ -49,16 +53,16 @@ public class ClientHandler extends Thread {
 				output.writeBoolean(false);
 			}
 		} catch (IOException e) {
-			System.out.println("Error handling client");
+			System.out.println(ErrorHandling.ERROR_CLIENT);
 		} catch (Exception e) {
-			System.out.println("Error validating credentials");
+			System.out.println(ErrorHandling.ERROR_CREDENTIALS);
 		} finally {
 			try {
 				socket.close();
 			} catch (IOException e) {
-				System.out.println("Couldn't close socket");
+				System.out.println(ErrorHandling.ERROR_SOCKET);
 			}
-			System.out.println("Connection closed");
+			System.out.println(Result.CLIENT_DISCONNECTED);
 		}
 	}
 }
