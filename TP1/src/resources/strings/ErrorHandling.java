@@ -5,6 +5,8 @@ public interface ErrorHandling {
 	static final String INVALID_PORT = "Votre port est invalide. Il doit se situer entre 5000 et 5050.";
 	static final String ERROR_NUMBER_TYPE = "Veuillez entrer un numéro.";
 	static final String ERROR_CLIENT = "Erreur de gestion client.";
+	static final String ERROR_OPENING_FILE = "Erreur d'ouverture de fichier. Assurez-vous que l'image est dans le répertoire source.";
+	static final String ERROR_CREATING_FILE = "Erreur de sauvegarde de fichier. Assurez-vous que le nom de fichier n'existe pas déjà.";
 	static final String ERROR_CREDENTIALS = "Erreur d'authentification.";
 	static final String ERROR_SOCKET = "Incapable de fermer le socket.";
 	static final String ERROR_ACCOUNT_CREATION = "Création d'utilisateur échouée. Veuillez réessayer.";

@@ -1,11 +1,16 @@
 import java.awt.image.BufferedImage;
 import resources.strings.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Console;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,19 +39,36 @@ public class ClientHandler extends Thread {
 				output.writeBoolean(true);
 				while (true) {
 					// Lire l'image du client et la traiter
-					String nomFichier = input.readUTF();
-					System.out.println(nomFichier);
-					if (nomFichier != "0") {
-							File imageFile = new File(nomFichier);
-							BufferedImage originalImage = ImageIO.read(imageFile);
-							Sobel.process(originalImage);
-							DateFormat df = new SimpleDateFormat("yyyy-MM-dd@HH:mm:ss");
-							System.out.println("[" + username + " - " + socket.getInetAddress().getHostAddress() + ":" +
-									socket.getPort() + " - " + df.format(new Date()) + "] : Image " + nomFichier + " reçue"
-									+ " pour traitement.");							
-						
-					} else {
-						break;
+					String readImage = input.readUTF();
+					if (readImage != "0") {
+						ByteArrayOutputStream fout = new ByteArrayOutputStream();
+						int i = 0;
+						int bytes = input.readInt();
+						while (i < bytes) {
+							fout.write(input.read());
+							i++;
+						}
+						byte[] data = fout.toByteArray();
+						ByteArrayInputStream byteArray = new ByteArrayInputStream(data);
+						BufferedImage image = ImageIO.read(byteArray);
+						BufferedImage filteredImage = Sobel.process(image);
+						DateFormat df = new SimpleDateFormat("yyyy-MM-dd@HH:mm:ss");
+						System.out.println("[" + username + " - " + socket.getInetAddress().getHostAddress() + ":" +
+								socket.getPort() + " - " + df.format(new Date()) + "] : Image " + readImage + " reçue"
+								+ " pour traitement.");
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						ImageIO.write( filteredImage, "jpg", baos );
+						byte[] newImageData = baos.toByteArray();
+						i = 0;
+						output.writeInt(newImageData.length);
+						while (i < newImageData.length) {
+							output.write(newImageData[i]);
+							i++;
+						}
+						fout.flush();
+						fout.close();
+						baos.flush();
+						baos.close();
 					}
 				}
 			} else {
@@ -55,6 +77,7 @@ public class ClientHandler extends Thread {
 		} catch (IOException e) {
 			System.out.println(ErrorHandling.ERROR_CLIENT);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(ErrorHandling.ERROR_CREDENTIALS);
 		} finally {
 			try {

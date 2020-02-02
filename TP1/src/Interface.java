@@ -80,6 +80,11 @@ public class Interface {
 		return inputScanner.nextLine();
 	}
 	
+	public String readNewFilename() {
+		System.out.println(Prompt.ENTER_NEW_FILENAME);
+		return inputScanner.nextLine();
+	}
+	
 	public void close() {
 		inputScanner.close();
 	}
