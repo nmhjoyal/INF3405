@@ -1,5 +1,3 @@
-bitch
-
 ## SERVER
 
 ### Exécuter du terminal
