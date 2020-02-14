@@ -65,6 +65,7 @@ public class Client {
 					}
 					output.writeUTF(filename);
 					int i = 0;
+					// Calculer le nombre d'octets à envoyer au serveur
 					int size = 0;
 					while ((i = fis.read()) != -1) {
 						size++;
@@ -81,12 +82,15 @@ public class Client {
 					fis.close();
 					ByteArrayOutputStream fout = new ByteArrayOutputStream();
 					i = 0;
+					
+					// Lire les octets envoyés du serveur
 					int newImageBytes = input.readInt();
 					while (i < newImageBytes) {
 						fout.write(input.read());
 						i++;
 					}
 					try {
+						// Créer le nouveau fichier de l'image transformée
 						ByteArrayInputStream filteredImageBytes = new ByteArrayInputStream(fout.toByteArray());
 						BufferedImage image = ImageIO.read(filteredImageBytes);
 						File outputImage = new File("./" + newFilename + ".jpg");
