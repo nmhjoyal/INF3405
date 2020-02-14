@@ -55,21 +55,25 @@ public class Client {
 					if (filename.equals("0")) {
 						break;
 					}
-					output.writeUTF(filename);
 					newFilename = in.readNewFilename();
 					FileInputStream fis;
 					try {
-						fis = new FileInputStream (new File("./src/" + filename));
+						fis = new FileInputStream (new File("./" + filename));
 					} catch (IOException e) {
 						System.out.println(ErrorHandling.ERROR_OPENING_FILE);
 						continue;
 					}
+					output.writeUTF(filename);
 					int i = 0;
-					byte[] bytes = fis.readAllBytes();
-					output.writeInt(bytes.length);
+					int size = 0;
+					while ((i = fis.read()) != -1) {
+						size++;
+					}
+					output.writeInt(size);
 					fis.close();
-					fis = new FileInputStream (new File("./src/" + filename));
-					while (i < bytes.length) {
+					fis = new FileInputStream (new File("./" + filename));
+					i = 0;
+					while (i < size) {
 						output.write(fis.read());
 						i++;
 					}
